@@ -1,0 +1,41 @@
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#video {
+    width: 0px;
+    height: 0px;
+}
+
+#canvas {
+    margin: 10px auto;
+    display: block;
+    background-size: cover;
+    background-position: center;
+}
+
+.controls-box {
+    box-shadow: 0 0 10px 0 #444;
+    width: 200px;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.show-color {
+    box-shadow: 0 0 3px 0 #ccc;
+    width: 24px;
+    height: 24px;
+}
+
+.red {
+    background-color: #F00;
+}
+
+.green {
+    background-color: #0F0;
+}
+
+.blue {
+    background-color: #00F;
+}
+

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chroma-kit</title>
+    <script src="chroma.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    
+    
+    <video src="" id="video" autoplay></video>
+        
+    <canvas id="canvas" width="0" height="0"></canvas>
+    
+    <script>
+        let config = {value: 0, color: 'green'};
+        const body = document.querySelector('body');
+        const thresholdTemplate = (config) => (`
+        <div class="controls-box">
+            <label>
+                Threshold:
+                <input type="range" value="0" id="threshold" oninput="showValue(this.value)" min="0" max="255"/>
+                <div class="show-value" id="showThreshold">${config.value}</div>
+            </label> 
+
+            <fieldset>
+                <label class="red">
+                    <input type="radio" name="color" value="red" onchange="showColor(this.value)" />
+                </label>
+                
+                <label class="green">
+                    <input type="radio" name="color" value="green" onchange="showColor(this.value)" checked />
+                </label>
+                    
+                <label class="blue">
+                    <input type="radio" name="color" value="blue" onchange="showColor(this.value)" />
+                </label>
+            </fieldset>
+
+            <div id="colorSample" class="show-color"></div>
+
+            <input type="file" id="coverImage" onchange="loadImage(event)" />
+        </div>
+        `);
+
+        const loadImage = (event) => {
+            const selectedFile = event.target.files[0];
+            const reader = new FileReader();
+            const container = document.getElementById('canvas');
+
+            reader.onload = (event) => {
+                container.style = (`background-image: url(${event.target.result})`);
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
+
+        const showValue = (value) => {
+            config.value = parseInt(value);
+            document.querySelector('#showThreshold').textContent = config.value;
+        };
+
+        const showColor = (color) => {
+            config.color = color;
+            document.querySelector('#colorSample').className = `show-color ${color}`;
+        };
+
+        body.insertAdjacentHTML('beforeEnd', thresholdTemplate(config));
+
+        chroma(config);
+    </script>
+</body>
+</html>

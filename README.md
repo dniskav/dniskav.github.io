@@ -1,1 +1,2 @@
-# dniskav.github.io
+# jsChromakit
+a Chromakit in javascript
