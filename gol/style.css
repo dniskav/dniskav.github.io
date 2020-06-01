@@ -1,14 +1,20 @@
+div#app {
+    text-align: center;
+    font-family: Helvetica, Arial;
+    background-color: lightgoldenrodyellow;
+}
+
 .board {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     margin: 0 auto;
-    background-color: rgb(25, 25, 25);
+    background-color: lightskyblue;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.6);
 }
 
 .q-block {
     display: flex;
-    /* border: 1px solid lightgray; */
     box-sizing: border-box;
     color: lightgray;
     align-items: center;

@@ -2,6 +2,11 @@
 import Square from './Square.js';
 import planeShape from './shapes/plane.js';
 import planesGunShape from './shapes/planesGun.js';
+import oscilatorsShape from './shapes/oscialtors.js';
+import spaceshipsShape from './shapes/spaceships.js';
+import diehard1Shape from './shapes/diehard1.js';
+import diehard2Shape from './shapes/diehard2.js';
+
 
 function game(container, gWidth, gHeight, nxC, nyC){
     let squares = [];
@@ -14,6 +19,7 @@ function game(container, gWidth, gHeight, nxC, nyC){
     const dimSW = gWidth / nxC;
     const dimSH = gHeight / nyC;
     const velocityTag = document.getElementById('velocityTag');
+    const generationsTag = document.getElementById('generations');
     velocityTag.innerText = this.framesSteps;
     this.operations = [
         [-1, -1],
@@ -38,15 +44,15 @@ function game(container, gWidth, gHeight, nxC, nyC){
     });
 
     this.setFramesStep = (framesXmseg) => {
+        const fr = parseInt(framesXmseg);
         if(this.running) {
             this.stop();
-            this.framesSteps = framesXmseg % 2000;
-            velocityTag.innerText = this.framesSteps;
+            this.framesSteps = (200 - fr) % 200;
             this.start();
         } else {
-            this.framesSteps = framesXmseg % 2000;
-            velocityTag.innerText = this.framesSteps;
+            this.framesSteps = (200 - fr) % 200;
         }
+        velocityTag.innerText = fr;
     };
 
     this.setErase = (flag) => {
@@ -59,16 +65,45 @@ function game(container, gWidth, gHeight, nxC, nyC){
             randomState.push(Array.from(Array(nxC), () => (Math.random() > 0.4) ? 1 : 0));
         }
 
-        this.updateBoard(randomState);
+        return randomState;
     };
 
     this.gen = (shape) => {
+        generationsTag.innerText = 0;
         const shapeState = [];
+
+        const shapes = {
+            random: this.random(),
+            plane: planeShape,
+            planesgun: planesGunShape,
+            oscilators: oscilatorsShape,
+            spaceships: spaceshipsShape,
+            diehard1: diehard1Shape,
+            diehard2: diehard2Shape,
+        };
+
         for(let i = 0; i < nyC; i++) {
             shapeState.push(Array.from(Array(nxC), () => 0));
         }
 
+        if(shape !== '') {
+            shapeState.forEach( (row, ndx) => {
+                if(ndx < shapes[shape].length) {
+                    row.splice(shapes[shape][0][ndx], shapes[shape].length, ...shapes[shape][ndx]);
+                }
+            });
+        }
+
+/*
         switch(shape) {
+            case 'random':
+                const randomState = this.random();
+                shapeState.forEach( (row, ndx) => {
+                    if(ndx < randomState.length) {
+                        row.splice(randomState[0][ndx], randomState.length, ...randomState[ndx]);
+                    }
+                });
+                break;
             case 'plane':
                 shapeState.forEach( (row, ndx) => {
                     if(ndx < planeShape.length) {
@@ -83,7 +118,37 @@ function game(container, gWidth, gHeight, nxC, nyC){
                     }
                 });
                 break;
-        }
+            case 'oscilators':
+                shapeState.forEach( (row, ndx) => {
+                    if(ndx < oscilatorsShape.length) {
+                        row.splice(oscilatorsShape[0][ndx], oscilatorsShape.length, ...oscilatorsShape[ndx]);
+                    }
+                });
+                break;
+            case 'spaceships':
+                shapeState.forEach( (row, ndx) => {
+                    if(ndx < spaceshipsShape.length) {
+                        row.splice(spaceshipsShape[0][ndx], spaceshipsShape.length, ...spaceshipsShape[ndx]);
+                    }
+                });
+                break;
+            case 'diehard1':
+                shapeState.forEach( (row, ndx) => {
+                    if(ndx < diehard1Shape.length) {
+                        row.splice(diehard1Shape[0][ndx], diehard1Shape.length, ...diehard1Shape[ndx]);
+                    }
+                });
+                break;
+            case 'diehard2':
+                shapeState.forEach( (row, ndx) => {
+                    if(ndx < diehard2Shape.length) {
+                        row.splice(diehard2Shape[0][ndx], diehard2Shape.length, ...diehard2Shape[ndx]);
+                    }
+                });
+                break;
+            default:
+                break;
+        }*/
 
         this.updateBoard(shapeState);
     };
@@ -157,6 +222,7 @@ function game(container, gWidth, gHeight, nxC, nyC){
             return;
         }
         this.render();
+        generationsTag.innerText = parseInt(generationsTag.innerText) + 1;
         this.timeout = setTimeout(this.frameSet ,this.framesSteps);
     };
 
