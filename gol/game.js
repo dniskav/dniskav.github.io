@@ -94,7 +94,6 @@ function game(container, gWidth, gHeight, nxC, nyC){
             });
         }
 
-
         this.updateBoard(shapeState);
     };
 
