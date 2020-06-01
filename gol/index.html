@@ -12,13 +12,29 @@
         <span>hold left click and move to draw</span>
         <button onclick="game.start()">Start</button>
         <button onclick="game.stop()">Stop</button>
-        <button onclick="game.random()">Random</button>
-        <button onclick="game.gen('plane')">Plane</button>
-        <button onclick="game.gen('planesGun')">Plane's gun</button>
+        <br />
+        <label for="shapes">Shapes</label>
+        <select name="shapes" id="shapes" onchange="game.gen(this.value)">
+            <option value="">Clear</option>
+            <option value="random">Random</option>
+            <option value="plane">Plane</option>
+            <option value="planesGun">PlanesGun</option>
+            <option value="oscilators">Oscilators</option>
+            <option value="spaceships">Spaceships</option>
+            <option value="diehard1">Die hard 1</option>
+            <option value="diehard2">Die hard 2</option>
+        </select>        
+        <br />
+
         <label>
             Velocity: <span id="velocityTag"></span> 
-            <input type="range" min="0" max="200" step="20" id="steps" oninput="game.setFramesStep(this.value)" value="100"/>
+            <input type="range" min="10" max="200" step="10" id="steps" oninput="game.setFramesStep(this.value)" value="100"/>
         </label>
+        
+        <br />
+        
+        <span>Generations: </span>
+        <span id="generations">0</span>
 
     </div>
     <script type="module" src="app.js"></script>

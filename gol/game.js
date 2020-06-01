@@ -2,6 +2,11 @@
 import Square from './Square.js';
 import planeShape from './shapes/plane.js';
 import planesGunShape from './shapes/planesGun.js';
+import oscilatorsShape from './shapes/oscialtors.js';
+import spaceshipsShape from './shapes/spaceships.js';
+import diehard1Shape from './shapes/diehard1.js';
+import diehard2Shape from './shapes/diehard2.js';
+
 
 function game(container, gWidth, gHeight, nxC, nyC){
     let squares = [];
@@ -14,6 +19,7 @@ function game(container, gWidth, gHeight, nxC, nyC){
     const dimSW = gWidth / nxC;
     const dimSH = gHeight / nyC;
     const velocityTag = document.getElementById('velocityTag');
+    const generationsTag = document.getElementById('generations');
     velocityTag.innerText = this.framesSteps;
     this.operations = [
         [-1, -1],
@@ -37,16 +43,16 @@ function game(container, gWidth, gHeight, nxC, nyC){
         this.setErase(false);
     });
 
-    this.setFramesStep = (framesXmseg) => {
+    this.setFramesStep = async (framesXmseg) => {
+        const fr = parseInt(framesXmseg);
         if(this.running) {
-            this.stop();
-            this.framesSteps = framesXmseg % 2000;
-            velocityTag.innerText = this.framesSteps;
-            this.start();
+            await this.stop();
+            this.framesSteps = (200 - fr) % 200;
+            await this.start();
         } else {
-            this.framesSteps = framesXmseg % 2000;
-            velocityTag.innerText = this.framesSteps;
+            this.framesSteps = (200 - fr) % 200;
         }
+        velocityTag.innerText = fr;
     };
 
     this.setErase = (flag) => {
@@ -59,31 +65,35 @@ function game(container, gWidth, gHeight, nxC, nyC){
             randomState.push(Array.from(Array(nxC), () => (Math.random() > 0.4) ? 1 : 0));
         }
 
-        this.updateBoard(randomState);
+        return randomState;
     };
 
     this.gen = (shape) => {
+        generationsTag.innerText = 0;
         const shapeState = [];
+
+        const shapes = {
+            random: this.random(),
+            plane: planeShape,
+            planesgun: planesGunShape,
+            oscilators: oscilatorsShape,
+            spaceships: spaceshipsShape,
+            diehard1: diehard1Shape,
+            diehard2: diehard2Shape,
+        };
+
         for(let i = 0; i < nyC; i++) {
             shapeState.push(Array.from(Array(nxC), () => 0));
         }
 
-        switch(shape) {
-            case 'plane':
-                shapeState.forEach( (row, ndx) => {
-                    if(ndx < planeShape.length) {
-                        row.splice(planeShape[0][ndx], planeShape.length, ...planeShape[ndx]);
-                    }
-                });
-                break;
-            case 'planesGun':
-                shapeState.forEach( (row, ndx) => {
-                    if(ndx < planesGunShape.length) {
-                        row.splice(planesGunShape[0][ndx], planesGunShape.length, ...planesGunShape[ndx]);
-                    }
-                });
-                break;
+        if(shape !== '') {
+            shapeState.forEach( (row, ndx) => {
+                if(ndx < shapes[shape].length) {
+                    row.splice(shapes[shape][0][ndx], shapes[shape].length, ...shapes[shape][ndx]);
+                }
+            });
         }
+
 
         this.updateBoard(shapeState);
     };
@@ -152,21 +162,22 @@ function game(container, gWidth, gHeight, nxC, nyC){
         this.updateBoard(nextState);
     };
 
-    this.frameSet = () => {
+    this.frameSet = async () => {
         if(!this.running) {
             return;
         }
-        this.render();
+        await this.render();
+        generationsTag.innerText = parseInt(generationsTag.innerText) + 1;
         this.timeout = setTimeout(this.frameSet ,this.framesSteps);
     };
 
-    this.start = () => {
+    this.start = async () => {
         if(this.running) return;
         this.running = true;
         this.frameSet();
     };
     
-    this.stop = () => {
+    this.stop = async () => {
         this.running = false;
         clearTimeout(this.timeout);
     };
